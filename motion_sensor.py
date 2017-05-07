@@ -1,4 +1,3 @@
-#!/usr/bin/env python
 #-*- coding: utf-8 -*-
 
 from time import sleep
@@ -7,7 +6,7 @@ import RPi.GPIO as GPIO
 class HumanDetector(object):
 
   CHECK_INTERVAL_SEC = 3
-  TIME_NEEDED_JUDGE_ABSENCE = 10
+  TIME_NEEDED_JUDGE_ABSENCE = 30
   SENSOR_PIN = 18
   
   def __init__(self):
