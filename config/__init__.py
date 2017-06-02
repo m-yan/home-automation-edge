@@ -1,6 +1,8 @@
 import configparser
+import os
 
-DEFAULT_CONFIG_FILE = "./config.ini"
+CONFIG_DIR = os.path.dirname(os.path.abspath(__file__))
+DEFAULT_CONFIG_FILE = CONFIG_DIR + "/config.ini"
 
 
 class ConfigUtil():
