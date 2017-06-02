@@ -4,6 +4,8 @@ from time import sleep
 import RPi.GPIO as GPIO
 import paho.mqtt.client as mqtt
 import config
+from onem2m_util import create_upload_request
+
 
 class MotionSensor(object):
 
@@ -34,33 +36,40 @@ class MotionSensor(object):
                 self._motion_detected = False
                 on_undetected()
 
-broker_ip = config.get("mqtt_broker", "ip")
-broker_port = config.getint("mqtt_broker", "port")
-
-pub_topic = config.get("mqtt_client", "pub_topic")
-client_id = config.get("mqtt_client", "client_id")
-
-check_interval_sec = config.getint("motion_sensor", "check_interval_sec")
-time_to_judge_absence_sec = config.getint("motion_sensor", "time_to_judge_absence_sec")
 
 def on_detected():
-    print("人を感知しました")
+    print('人を感知しました')
     client.connect(broker_ip, port=broker_port, keepalive=60)
-    client.publish(pub_topic, '1')
+    request = create_upload_request(to, '1')
+    client.publish(pub_topic, request)
     client.disconnect()
+
 
 def on_undetected():
-    print("人がいなくなりました")
+    print('人がいなくなりました')
     client.connect(broker_ip, port=broker_port, keepalive=60)
-    client.publish(pub_topic, '0')
+    request = create_upload_request(to, '0')
+    client.publish(pub_topic, request)
     client.disconnect()
 
+
 if __name__ == '__main__':
+    broker_ip = config.get('mqtt_broker', 'ip')
+    broker_port = config.getint('mqtt_broker', 'port')
+
+    pub_topic = config.get('mqtt_client', 'pub_topic')
+    client_id = config.get('mqtt_client', 'client_id')
+
+    to = config.get('container_uri', 'motion_sensor_data')
+
+    check_interval_sec = config.getint('motion_sensor', 'check_interval_sec')
+    time_to_judge_absence_sec = config.getint('motion_sensor', 'time_to_judge_absence_sec')
+
     client = mqtt.Client(client_id=client_id, clean_session=False, protocol=mqtt.MQTTv311)
 
     try:
         m_sensor = MotionSensor(check_interval_sec, time_to_judge_absence_sec)
         m_sensor.monitor(on_detected, on_undetected)
 
-    except KeyboardInterrupt:
+    finally:
         client.disconnect()
