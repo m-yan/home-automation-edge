@@ -4,11 +4,11 @@ import socket
 import config
 import json
 
-def on_connect(client, sock, flags, rc):
+def __on_connect(client, sock, flags, rc):
     client.subscribe(sub_topic)
 
 
-def on_message(client, sock, message):
+def __on_message(client, sock, message):
     str_payload = message.payload.decode('utf-8')
     print(message.topic + ' ' + str_payload)
 
@@ -23,16 +23,16 @@ def on_message(client, sock, message):
     
     except socket.error:
         sock.close()
-        sock = get_iremocon_connection()
+        sock = __get_iremocon_connection()
         self.user_data_set(sock)
 
 
-def on_disconnect(client, sock, rc):
+def __on_disconnect(client, sock, rc):
     sock.close()
     print('Connection to iRemocon closed.')
 
 
-def get_iremocon_connection():
+def __get_iremocon_connection():
     sock = socket.create_connection((iremocon_ip, iremocon_port), timeout=5)
     print('Connected sucessfully to iRemocon.')
     sock.settimeout(None)
@@ -63,12 +63,12 @@ if __name__ == '__main__':
     iremocon_port = config.getint('iremocon', 'port')
     
     try:
-        sock = get_iremocon_connection()
+        sock = __get_iremocon_connection()
         
         client = mqtt.Client(protocol=mqtt.MQTTv311, userdata=sock)
-        client.on_connect = on_connect
-        client.on_message = on_message
-        client.on_disconnect = on_disconnect
+        client.on_connect = __on_connect
+        client.on_message = __on_message
+        client.on_disconnect = __on_disconnect
         
         client.connect(broker_ip, port=broker_port, keepalive=60)
         print('Connected sucessfully to MQTT Broker.')

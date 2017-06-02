@@ -37,7 +37,7 @@ class MotionSensor(object):
                 on_undetected()
 
 
-def on_detected():
+def __on_detected():
     print('人を感知しました')
     client.connect(broker_ip, port=broker_port, keepalive=60)
     request = create_upload_request(to, '1')
@@ -45,7 +45,7 @@ def on_detected():
     client.disconnect()
 
 
-def on_undetected():
+def __on_undetected():
     print('人がいなくなりました')
     client.connect(broker_ip, port=broker_port, keepalive=60)
     request = create_upload_request(to, '0')
@@ -69,7 +69,7 @@ if __name__ == '__main__':
 
     try:
         m_sensor = MotionSensor(check_interval_sec, time_to_judge_absence_sec)
-        m_sensor.monitor(on_detected, on_undetected)
+        m_sensor.monitor(__on_detected, __on_undetected)
 
     finally:
         client.disconnect()
