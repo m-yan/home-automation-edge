@@ -6,7 +6,7 @@ from datetime import datetime
 
 def create_upload_request(str_to, str_content):
     request_template = \
-        '{{"op":1,"to":"{0}","fr":"IN-AE-ID","rqi":"{1}","ty":4,"pc":{{"m2m:cin":{{"con":"{2}"}}}}}}'
+        '{{"op":1,"to":"{0}","fr":"IN-AE-ID","rqi":"{1}","ty":4,"pc":{{"m2m:cin":{{"ty": 4,"cnf": "text/plain:0","con":"{2}"}}}}}}'
     request_id = __get_request_id()
     return request_template.format(str_to, request_id, str_content)
 

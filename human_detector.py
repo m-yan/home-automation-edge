@@ -39,18 +39,23 @@ class MotionSensor(object):
 
 def __on_detected():
     print('人を感知しました')
-    client.connect(broker_ip, port=broker_port, keepalive=60)
-    request = create_upload_request(to, '1')
-    client.publish(pub_topic, request)
-    client.disconnect()
-
+    try:
+        client.connect(broker_ip, port=broker_port, keepalive=60)
+        request = create_upload_request(to, '1')
+        client.publish(pub_topic, request)
+        client.disconnect()
+    except:
+        print('送信失敗')
 
 def __on_undetected():
     print('人がいなくなりました')
-    client.connect(broker_ip, port=broker_port, keepalive=60)
-    request = create_upload_request(to, '0')
-    client.publish(pub_topic, request)
-    client.disconnect()
+    try:
+        client.connect(broker_ip, port=broker_port, keepalive=60)
+        request = create_upload_request(to, '0')
+        client.publish(pub_topic, request)
+        client.disconnect()
+    except:
+        print('送信失敗')
 
 
 if __name__ == '__main__':
