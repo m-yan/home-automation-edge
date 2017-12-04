@@ -1,9 +1,9 @@
 #-*- coding: utf-8 -*-
 
-import common
+import iremocon_util
 import paho.mqtt.client as mqtt
 import config
-import json
+from onem2m_util import extract_notify_cin_con
 
 
 def __on_connect(client, irgw, flags, rc):
@@ -14,7 +14,8 @@ def __on_message(client, irgw, message):
     str_payload = message.payload.decode('utf-8')
     print(message.topic + ' ' + str_payload)
 
-    iremocon_command = __extract_notify_cin_con(str_payload)
+    iremocon_command = extract_notify_cin_con(str_payload)
+    print(iremocon_command)
     if iremocon_command is None:
         return
 
@@ -25,27 +26,12 @@ def __on_disconnect(client, irgw, rc):
     irgw.close()
 
 
-def __extract_notify_cin_con(str_json_notify_req):
-    try:
-        req = json.loads(str_json_notify_req)
-        content = req['pc']['m2m:cin']['con']
-        return content
-
-    except ValueError as e:
-        print('{}'.format(e.args))
-        return None
-
-    except KeyError as e:
-        print('{}'.format(e.args))
-        return None
-
-
 if __name__ == '__main__':
     broker_ip = config.get('mqtt_broker', 'ip')
     broker_port = config.getint('mqtt_broker', 'port')
     sub_topic = config.get('mqtt_client', 'sub_topic')
 
-    irgw = common.IRemoconGW()
+    irgw = iremocon_util.IRemoconGW()
 
     try:
         client = mqtt.Client(protocol=mqtt.MQTTv311, userdata=irgw)

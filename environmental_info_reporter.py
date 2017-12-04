@@ -1,6 +1,6 @@
 #-*- coding: utf-8 -*-
 
-import common
+import iremocon_util
 import config
 import paho.mqtt.client as mqtt
 from onem2m_util import create_upload_request
@@ -18,7 +18,7 @@ measure_interval_sec = config.getint('environmental_sensor', 'measure_interval_s
 
 client = mqtt.Client(protocol=mqtt.MQTTv311)
 
-irgw = common.IRemoconGW()
+irgw = iremocon_util.IRemoconGW()
 
 try:
     while True:

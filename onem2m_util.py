@@ -1,6 +1,7 @@
 #-*- coding: utf-8 -*-
 import string
 import random
+import json
 from datetime import datetime
 
 
@@ -10,6 +11,21 @@ def create_upload_request(str_to, str_content):
     request_id = __get_request_id()
     return request_template.format(str_to, request_id, str_content)
 
+def extract_notify_cin_con(str_json_notify_req):
+    try:
+        notification = json.loads(str_json_notify_req)
+        str_representation = notification['pc']['m2m:sgn']['nev']['rep']
+        representation = json.loads(str_representation)
+        content = representation['m2m:cin']['con']
+        return content
+
+    except ValueError as e:
+        print('{}'.format(e.args))
+        return None
+
+    except KeyError as e:
+        print('{}'.format(e.args))
+        return None
 
 def __get_request_id():
     chara_num = 5
